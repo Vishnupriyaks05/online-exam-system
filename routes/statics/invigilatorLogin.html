@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <div class="container">
+    <div id="userauth" class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card mt-5">
+          <div class="card-header">
+            <h4>Invigilator Login</h4>
+          </div>
+          <div class="card-body">
+            
+              <div class="form-group">
+                <label for="collageId">CollageId</label>
+                <input type="number" class="form-control" id="collageId" placeholder="Enter Collage Id">
+              </div>
+              <div class="form-group">
+                <label  for="pswd">Password</label>
+                <input type="password" class="form-control" id="pswd" placeholder="Enter Password">
+              </div>
+              <button onclick="login()" class="btn btn-primary">Login</button>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  
+
+  
+  <script>
+
+   
+    function login(){
+      if($("#collageId").val() == ""){
+          alert("Please provide valid collageId")
+          return
+      }
+      const data = {};
+      data.collageId = $("#collageId").val()
+      $.ajax({
+          type: "POST",
+          data: data,
+          url:  'http://localhost:9000/service/auth/invigilator',
+          success: function(data, textStatus, xhr){
+            if(xhr.status == 200){
+              if($("#pswd").val() === "test@123"){
+                window.location.href = "http://localhost:9000/invigilator/home";
+              }else{
+                alert("Invalid password.")
+              }
+            }
+          },
+          error: function(e) {
+              if(e.status == 409){
+                  alert("user not found")
+              }
+          }
+      });
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

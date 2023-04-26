@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <div class="container">
+    <div id="userauth" class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card mt-5">
+          <div class="card-header">
+            <h4>Login</h4>
+          </div>
+          <div class="card-body">
+            
+              <div class="form-group">
+                <label for="username">Email</label>
+                <input type="text" class="form-control" id="username" placeholder="Enter email">
+              </div>
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="Enter password">
+              </div>
+              <button onclick="getOtp()" class="btn btn-primary">Get Otp</button><br/>
+              <div class="form-group">
+                <label  for="otp">Otp</label>
+                <input type="text" class="form-control" id="otp" placeholder="Enter otp">
+              </div>
+              <button onclick="login()" class="btn btn-primary">Validate OTP and Login</button><br><br>
+              <div><a href="http://localhost:9000/invigilator/login">Login as Invigilator</a></div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  
+
+  
+  <script>
+
+   
+    function getOtp(){
+      if($("#username").val() == "" || $("#password").val() == ""){
+          alert("Please provide valid data")
+          return
+      }
+      const data = {};
+      data.email = $("#username").val()
+      data.password = $("#password").val()
+      $.ajax({
+          type: "POST",
+          data: data,
+          url:  'http://localhost:9000/service/auth/admin',
+          success: function(data, textStatus, xhr){
+            if(xhr.status == 200){
+              alert("OTP SEND PLEASE ENTER THE OTP AND CLICK LOGIN.")
+            }
+          },
+          error: function(e) {
+              if(e.status == 409){
+                  alert("user not found")
+              }
+              if(e.status == 401){
+                  alert("password is wrong")
+              }
+          }
+      });
+    }
+
+    function login(){
+      if($("#otp").val() == "102030"){
+        window.location.href = "http://localhost:9000/home";
+
+      }else{
+        alert("wrong otp")
+      }
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

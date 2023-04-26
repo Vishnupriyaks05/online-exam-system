@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <div class="container">
+    <div id="userauth" class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card mt-5">
+          <div class="card-header">
+            <h4>Student Login</h4>
+          </div>
+          <div class="card-body">
+            
+              <div class="form-group">
+                <label for="collageId">Enrollment Number</label>
+                <input type="number" class="form-control" id="enrollmentId" placeholder="Enter Enrollment Number">
+
+                <label for="collageId">Password</label>
+                <input type="password" class="form-control" id="password_" placeholder="Enter password">
+              </div>
+            
+              <button onclick="login()" class="btn btn-primary">Login</button>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  
+
+  
+  <script>
+
+   
+    function login(){
+      if($("#enrollmentId").val() == "" || $("#password_").val() == ""){
+          alert("Please provide valid enrollment number")
+          return
+      }
+      const data = {};
+      data.enrollmentNumber = $("#enrollmentId").val()
+      data.dob = $("#password_").val()
+      $.ajax({
+          type: "POST",
+          data: data,
+          url:  'http://localhost:9000/service/auth/student',
+          success: function(data, textStatus, xhr){
+            console.log(data[0].name)
+            localStorage.setItem("sname", data[0].name)
+            localStorage.setItem("enum", $("#enrollmentId").val())
+            if(xhr.status == 200){
+              setTimeout(function(){
+                if(data[0].isApproved){
+                  window.location.href = "http://localhost:9000/exam";
+                }else{
+                  alert("Waiting for Invigilator's approvel !")
+                  return
+                }
+              }, 100)
+              
+            }
+          },
+          error: function(e) {
+              if(e.status == 404){
+                  alert("Student not found")
+              }
+          }
+      });
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

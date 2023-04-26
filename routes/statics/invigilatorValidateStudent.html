@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+    <title>home</title>
+  </head>
+  <body>
+
+
+    
+
+
+
+    <div class="container-fluid">
+      <div class="row">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky"><br><br><br>
+            <ul class="nav flex-column">
+              <h3>
+              <li class="nav-item">
+                <a class="nav-link " href="http://localhost:9000/invigilator/home">Home</a>
+              </li><br>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Validate Student</a>
+              </li><br>
+              <!-- <li class="nav-item">
+                <a class="nav-link" href="http://localhost:9000/view/logs">Data Logs</a>
+              </li><br> -->
+          </h3>
+            </ul>
+          </div>
+        </nav>
+          
+      
+          <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+              <h1 class="h2">Invigilator Dashboard</h1>
+              <div class="btn-toolbar mb-2 mb-md-0">
+               
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" onclick="logout()">
+                  <span data-feather="calendar"></span>
+                  Logout
+                </button>
+              </div>
+            </div>
+      
+            <div id="listArea" style="text-align: center;">
+              <br><br>
+              <div class="container">
+                  <div class="row">
+                 
+                    <div class="input-group mb-3">
+                      <input type="number" id="enumber" class="form-control" placeholder="Student enrollmentNumber" aria-label="Student Enrollment Number" aria-describedby="basic-addon2">
+                      <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" onclick="validateStudent()">Validate</button>
+                      </div>
+                    </div>
+                    
+                    <div id="detailview">
+                      <div class="card" style="width: 18rem;">
+                        <ul class="list-group list-group-flush">
+                          <li class="list-group-item">NAME : <p id="name"></p></li>
+                          <li class="list-group-item">Department : <p id="Department"></p></li>
+                          <li class="list-group-item">Collage Id : <p id="cid"></p></li>
+                          <!-- <li class="list-group-item">Enrollment Number : <p id="enum"></p></li> -->
+                          <li class="list-group-item">Dob : <p id="dob"></p></li>
+                          <li class="list-group-item">Exam Center : <p id="ecenter"></p></li><br>
+                          <button id="approveBtn" class="btn btn-outline-secondary" type="button" onclick="studentStatus(true)">Approve</button>
+                          <button id="denayBtn" class="btn btn-outline-secondary" type="button" onclick="studentStatus(false)">disapprove</button>
+                          
+                        </ul>
+                      </div>
+                    </div>
+                    
+
+                    </div>
+
+      
+                  </div>
+               
+              </div>
+            </div>
+      
+           
+          </main>
+        </div>
+      </div>
+      
+
+      
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script>
+      function logout(){
+        window.location = "http://localhost:9000/"
+      }
+
+      window.onload = function(){
+        $("#detailview").hide()
+      }
+
+      function validateStudent(){
+        console.log("dd")
+        var enumber = $("#enumber").val()
+        const data = {};
+        data.enrollmentNumber = enumber
+        $.ajax({
+            type: "POST",
+            data: data,
+            url:  'http://localhost:9000/service/check-student',
+            success: function(data, textStatus, xhr){
+              if(xhr.status == 200){
+                $("#name").text(data[0].name)
+                $("#Department").text(data[0].department)
+                $("#cid").text(data[0].collageId)
+                $("#enum").text(data[0].enrollmentNumber)
+                $("#dob").text(data[0].dob)
+                $("#ecenter").text(data[0].examCenter)
+                //$("#status").text(data[0].isApproved)
+                $("#detailview").show()
+                console.log(data[0])
+                if(data[0].isApproved){
+                  $("#approveBtn").hide()
+                  $("#denayBtn").show()
+                }else{
+                  $("#denayBtn").hide()
+                  $("#approveBtn").show()
+                }
+                localStorage.setItem("selectedStudentEnum", data[0].enrollmentNumber)
+               
+              }
+            },
+            error: function(e) {
+                if(e.status == 404){
+                    alert("Invalid Enrollment Number !")
+                    
+                }
+            }
+        });
+        
+      }
+
+      var TOTAL_SYSTEMS = 15 
+      function systemNumberGenerator(isApproved) {
+        let systemNumber = parseInt(localStorage.getItem("systemNumber")) || 0;
+        if (isApproved) {
+          if (systemNumber < TOTAL_SYSTEMS) {
+            systemNumber++;
+            localStorage.setItem("systemNumber", systemNumber);
+            alert("SYSTEM NUMBER IS : "+systemNumber);
+            if (systemNumber >= TOTAL_SYSTEMS) {
+              alert("ALL SYSTEMS ARE ALLOCATED");
+              return;
+            }
+          }
+        } else {
+          if (systemNumber > 0) {
+            systemNumber = parseInt(localStorage.getItem("systemNumber")) || 0;
+            systemNumber--;
+            localStorage.setItem("systemNumber", systemNumber);
+            //alert("1 SYSTEM IS FREE NOW ");
+          }
+        }
+      }
+
+
+      
+      function studentStatus(e){
+        const data = {};
+        data.enrollmentNumber = localStorage.getItem("selectedStudentEnum")
+        data.status = e
+        $.ajax({
+            type: "POST",
+            data: data,
+            url:  'http://localhost:9000/service/student/status/update',
+            success: function(data, textStatus, xhr){
+              if(xhr.status == 200){
+                systemNumberGenerator(e)
+                window.location.href = "http://localhost:9000/invigilator/home";
+              }
+            },
+            error: function(e) {
+                if(e.status == 404){
+                    alert("Something went wrong please try again !")
+                    
+                }
+            }
+        });
+        
+      }
+
+    </script>
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>

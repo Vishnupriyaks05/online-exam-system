@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+    <title>invigilator</title>
+  </head>
+  <body>
+
+
+
+
+
+
+    <div class="container-fluid">
+        <div class="row">
+          <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            <div class="sidebar-sticky"><br><br><br>
+              <ul class="nav flex-column">
+                <h3>
+                  <li class="nav-item">
+                    <a class="nav-link " href="http://localhost:9000/downloads">Downloads</a>
+                  </li><br>
+                  <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:9000/view/invigilator">Invigilator</a>
+                  </li><br>
+                  <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:9000/view/logs">Data Logs</a>
+                  </li><br>
+            </h3>
+              </ul>
+            </div>
+          </nav>
+      
+          <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+              <h1 class="h2">Invigilator</h1>
+              <div class="btn-toolbar mb-2 mb-md-0">
+               
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" onclick="logout()">
+                  <span data-feather="calendar"></span>
+                  Logout
+                </button>
+              </div>
+            </div>
+      
+            <div id="mainArea" style="text-align: center;">
+              <div class="container">
+                <div class="row">
+                  <div class="col-sm">
+                    Invigilator list<br>
+                    <button onclick="listInvigilators()">List</button>
+                  </div>
+                  <div class="col-sm">
+                    Register Invigilator<br>
+                    <button onclick="showAddArea()">Register</button>
+                  </div>
+                 
+                </div>
+              </div>
+            </div>
+
+
+            <div id="addArea" style="text-align: center;">
+              <div class="container">
+                <div class="row">
+                  <div class="col-sm">
+                    <div class="form-group">
+                      <label for="iname">name</label>
+                      <input type="text" class="form-control" id="iname" placeholder="Enter name">
+                    </div>
+                    <div class="form-group">
+                      <label for="icid">Collage ID</label>
+                      <input type="text" class="form-control" id="icid" placeholder="Enter Collage ID">
+                    </div>
+                    
+                    <div class="form-group">
+                      <label  for="phone">Phone</label>
+                      <input type="number" class="form-control" id="phone" placeholder="Enter phone">
+                    </div>
+                    <button onclick="registerInvigilator()" class="btn btn-primary">Register</button>
+                    <button onclick="hideAllarea()" class="btn btn-primary">Back</button>
+                  </div>
+                  
+                  <div class="col-sm">
+                    
+                  </div>
+                 
+                </div>
+              </div>
+            </div>
+
+
+            <div id="listArea" style="text-align: center;">
+              <div class="container">
+                  <div class="row">
+                    <div  class="col-sm">
+                      
+                        <h3>List</h3><br><br>
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th scope="col">#</th>
+                              <th scope="col">name</th>
+                              <th scope="col">Collage ID</th>
+                              <th scope="col">Phone</th>
+                            </tr>
+                          </thead>
+                          <tbody id="listHere">
+                            
+                          </tbody>
+                        </table>
+                       
+
+                    </div>
+
+                    <div class="col-sm"><button onclick="location.reload();">Back</button></div>
+                  </div>
+               
+              </div>
+            </div>
+      
+           
+          </main>
+        </div>
+      </div>
+      
+
+      
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+    <script>
+      window.onload = function(){
+        $('#listArea').hide();
+        $('#addArea').hide()
+      }
+
+      function showAddArea(){
+        $('#listArea').hide();
+        $("#mainArea").hide()
+        $('#addArea').show()
+      }
+
+      function showListArea(){
+        $('#listArea').show();
+        $("#mainArea").hide()
+        $('#addArea').hide()
+      }
+
+      function hideAllarea(){
+        $('#listArea').hide();
+        $('#addArea').hide()
+        $("#mainArea").show()
+      }
+
+      function containsNumberOrSpecialChar(str) {
+        return /\d/.test(str) || /[^\w\s]/.test(str);
+      }
+
+      function registerInvigilator(){
+        if($("#iname").val() == "" || $("#icid").val() == "" || $("#phone").val() == ""){
+            alert("Please provide valid data")
+            return
+        }
+
+        let phoneNumber = $("#phone").val();
+        if (phoneNumber.length < 10) {
+          alert(`Invalid phone number`);
+          return
+        }
+
+        if(containsNumberOrSpecialChar($("#iname").val())){
+            alert("please avoid number and special character")
+            return
+        }
+
+        const data = {};
+        data.name = $("#iname").val()
+        data.collageId = $("#icid").val()
+        data.phone = $("#phone").val()
+        $.ajax({
+            type: "POST",
+            data: data,
+            url:  'http://localhost:9000/service/invigilator',
+            success: function(data, textStatus, xhr){
+              if(xhr.status == 201){
+                hideAllarea()
+                alert("Registration successful")
+              }
+            },
+            error: function(e) {
+                if(e.status == 400){
+                    alert("something went wrong try agian")
+                    
+                }
+                if(e.status == 401){
+                    alert("password is wrong")
+                }
+            }
+        });
+      }
+
+
+
+
+      function listInvigilators(){
+        showListArea()
+        $.get("http://localhost:9000/service/invigilator", function(data, status){
+          console.log(data);
+          console.log(data.result)
+          str = ''
+          for(var index=0; index<data.result.length; index++){
+              console.log(data.result[index].name)
+              str+='<tr>'
+              str+='<th scope="row">'+index+'</th>'
+              str+='<td>'+data.result[index].name+'</td>'
+              str+='<td>'+data.result[index].collageId+'</td>' 
+              str+='<td>'+data.result[index].phone+'</td>'                 
+              str+='</tr>'
+                                  
+          }
+          $('#listHere').html(str)
+        });
+      }
+
+
+     
+    </script>
+
+<script>
+  function logout(){
+    window.location = "http://localhost:9000/"
+  }
+</script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
