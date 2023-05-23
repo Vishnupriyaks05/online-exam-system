@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login Page</title>
+  <title>exam Page</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
   <style>
@@ -147,12 +147,34 @@ body{
 
 var questionBank = new Array();
 var gtime =  "60:00"
+
+function getCurrentTime(){
+			// Create a new Date object
+			var currentTime = new Date();
+
+			// Set the desired time (10:00 PM)
+			currentTime.setHours(22);
+			currentTime.setMinutes(0);
+			currentTime.setSeconds(0);
+
+			// Format the time as "10:00 PM"
+			var timeString = currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+			// Display the time
+			console.log("Current time: " + timeString);
+			return timeString;
+
+		}
+        
 window.onload = function(){
   getQuestions()
 
   $("#stdname").text(localStorage.getItem("sname"));
 
-  $("#stdname").text(localStorage.getItem("sname"));
+  //$("#stdname").text(localStorage.getItem("sname"));
+
+  var eid = localStorage.getItem("enum")
+  localStorage.setItem(eid+"stime", getCurrentTime())
 
     // Call the function with a duration of 60 minutes
     startTimer(60);
@@ -178,12 +200,22 @@ function nextQuestion(){
         }else{
             console.log(questionIndex)
             alert("questions over")
+            window.location.href = "http://localhost:9000/examEndPage";
         }
     }catch(e){
         console.log(e)
         alert("questions over")
+        window.location.href = "http://localhost:9000/examEndPage";
     }
 }
+
+
+setInterval(function(){
+    var x = localStorage.getItem("examStats", 0)
+    if(x == 0){
+        window.location.href = "http://localhost:9000/examEndPage";
+    }
+}, 1000)
 
 setInterval(function(){
     console.log("db update")
@@ -238,7 +270,7 @@ function getQuestions(){
       clearInterval(timerInterval);
       console.log("Time's up!");
       alert("time over !")
-      return
+      window.location.href = "http://localhost:9000/examEndPage";
     } else {
       // Calculate the minutes and seconds remaining
       let minutes = Math.floor(remainingTime / 1000 / 60);

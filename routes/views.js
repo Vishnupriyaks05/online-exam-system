@@ -41,5 +41,19 @@ router.get("/exam", (req, res)=>{
     res.sendFile(__dirname + '/statics/examPage.html');
 })
 
+router.get("/examWaitPage", (req, res)=>{
+    res.sendFile(__dirname + '/statics/waitingPage.html');
+})
+
+router.get("/examEndPage", (req, res)=>{
+    res.sendFile(__dirname + '/statics/examEnd.html');
+})
+
+router.get("/view/examResult", (req, res)=>{
+    res.sendFile(__dirname + '/statics/exam.html');
+})
+
+
+
 
 module.exports = router

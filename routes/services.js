@@ -4,6 +4,7 @@ const Invigilator = require('../models/Invigilator')
 const Questions = require('../models/questions')
 const Students = require('../models/students')
 const examLogs = require('../models/log')
+const examResults = require('../models/examResult')
 const twilio = require('twilio')
 const pdf = require('pdfkit');
 const router = express.Router()
@@ -230,6 +231,42 @@ router.post('/examlog/update', async (req, res) => {
       res.status(500).json({ msg: "Error updating log" });
     }
   });
+
+
+  //exam result update
+router.post('/exam/result', async (req, res) => {
+    const enrollmentNumber = req.body.enrollmentNumber;
+    const query = { enrollmentNumber };
+  
+    try {
+      const existingStudent = await examResults.exists(query);
+  
+      if (existingStudent) {
+        const update = {
+          name: req.body.name,
+          startTime: req.body.startTime,
+          endTime: req.body.endTime,
+          status: req.body.status
+        };
+        const options = { new: true, upsert: true };
+        const log = await examResults.findOneAndUpdate(query, update, options);
+        res.json({ msg: "updated successfully", data: log });
+      } else {
+        const log = new examResults(req.body);
+        const savedLog = await log.save();
+        res.json({ msg: "Log created successfully", data: savedLog });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ msg: "Error updating log" });
+    }
+  });
+
+//get results
+router.get('/examstatus/get',async (req, res)=>{
+    const r = await examResults.find()
+    res.status(200).json(r)
+})
   
 
 //approve or denay student
@@ -252,6 +289,8 @@ router.post('/student/status/update', async (req, res) => {
       res.status(500).json({ msg: "Error updating status" });
     }
   });
+
+
 
 //get log
 router.get('/examlog/get',async (req, res)=>{

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+	<title>Waiting Page</title>
+	<style>
+		.waiting {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			text-align: center;
+			font-size: 24px;
+		}
+		.spinner {
+			display: inline-block;
+			margin-bottom: 10px;
+			width: 40px;
+			height: 40px;
+			border-radius: 50%;
+			border: 4px solid #ccc;
+			border-top-color: #333;
+			animation: spin 1s ease-in-out infinite;
+		}
+		@keyframes spin {
+			to {
+				transform: rotate(360deg);
+			}
+		}
+	</style>
+</head>
+<body>
+	<div class="waiting">
+		<div class="spinner"></div>
+		<p id="namee"></p>
+	</div>
+</body>
+<script>
+
+	function getCurrentTime(){
+		// Create a new Date object
+		var currentTime = new Date();
+
+		// Set the desired time (10:00 PM)
+		currentTime.setHours(22);
+		currentTime.setMinutes(0);
+		currentTime.setSeconds(0);
+
+		// Format the time as "10:00 PM"
+		var timeString = currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+		// Display the time
+		console.log("Current time: " + timeString);
+		return timeString;
+
+	}
+
+    $("#namee").text("Hello, "+localStorage.getItem("sname")+" Please wait...Exam will start automatically");
+    setInterval(function(){
+        var x = localStorage.getItem("examStats", 0)
+        if(x == 1){
+            window.location.href = "http://localhost:9000/exam";
+        }
+    }, 1000)
+</script>
+</html>
